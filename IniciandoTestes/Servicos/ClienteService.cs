@@ -14,7 +14,7 @@ namespace IniciandoTestes.Servicos
             _clienteRepository = clienteRepository;
         }
 
-        public void AddClliente(Cliente cliente)
+        public void AddCliente(Cliente cliente)
         {
             if (DateTime.Now.AddYears(-18) < cliente.Nascimento)
             {
@@ -25,7 +25,9 @@ namespace IniciandoTestes.Servicos
 
             if (clienteBd?.Id == cliente.Id)
             {              
-                throw new Exception("Cliente já existe no banco de dados.");
+                    throw new Exception("Cliente já existe no banco de dados " +
+                                        "ou o ID inserido não corresponde a " +
+                                        "nenhum cliente na base de dados.");
             }
 
             _clienteRepository.AddCliente(cliente);

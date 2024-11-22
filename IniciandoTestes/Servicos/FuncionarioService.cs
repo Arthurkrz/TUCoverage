@@ -25,20 +25,20 @@ namespace IniciandoTestes.Servicos
             {
                 case Senioridade.Junior:
                     {
-                        if (funcionario.Salario < 3200 || funcionario.Salario > 5500)
+                        if (funcionario.Salario <= 3200 || funcionario.Salario >= 5500)
                             throw new Exception("Salario imcompativel com o cargo");
                         break;
                     }
                 case Senioridade.Pleno:
                     {
-                        if (funcionario.Salario < 5500 || funcionario.Salario > 8000)
+                        if (funcionario.Salario <= 5500 || funcionario.Salario >= 8000)
                             throw new Exception("Salario imcompativel com o cargo");
                         break;
                     }
 
                 case Senioridade.Senior:
                     {
-                        if (funcionario.Salario < 8000)
+                        if (funcionario.Salario <= 8000)
                             throw new Exception("Salario imcompativel com o cargo");
                         break;
                     }

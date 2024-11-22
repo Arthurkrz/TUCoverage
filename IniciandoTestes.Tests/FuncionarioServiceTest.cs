@@ -19,12 +19,12 @@ namespace IniciandoTestes.Tests
 
         [Theory]
         [MemberData(nameof(GetFuncionariosData))]
-        public void AdicionarFuncionario_DeveConcluir_QuandoDadosValidos(Funcionario funcionario, int n1, string exemplo)
+        public void AdicionarFuncionario_DeveConcluir_QuandoDadosValidos(Funcionario funcionario)
         {
             //Arrange
             FuncionarioService sut = new FuncionarioService();
 
-            //Act - Assert
+            //Act & Assert
             sut.AdicionarFuncionario(funcionario);
         }
 
@@ -39,31 +39,163 @@ namespace IniciandoTestes.Tests
                     Nome = faker.Name.FullName(),
                     Nascimento = faker.Date.Between(DateTime.Now.AddDays(-21), DateTime.Now.AddDays(-50)),
                     Senioridade = Senioridade.Junior,
-                    Salario = faker.Random.Double(3200,5500)
+                    Salario = faker.Random.Double(3300,5400)
                 },
                 2,
                 "Sucesso"
             };
 
-            yield return new object[] { new Funcionario()
+            yield return new object[] 
+            { 
+                new Funcionario()
                 {
                     Nome = faker.Name.FullName(),
                     Nascimento = faker.Date.Between(DateTime.Now.AddDays(-21), DateTime.Now.AddDays(-50)),
                     Senioridade = Senioridade.Pleno,
-                    Salario = faker.Random.Double(5500,8000)
+                    Salario = faker.Random.Double(5600,7000)
                 },
                 5,
                 "Falha"
             };
 
-            yield return new object[] { new Funcionario()
+            yield return new object[] 
+            { 
+                new Funcionario()
                 {
                     Nome = faker.Name.FullName(),
                     Nascimento = faker.Date.Between(DateTime.Now.AddDays(-21), DateTime.Now.AddDays(-50)),
                     Senioridade = Senioridade.Senior,
-                    Salario = faker.Random.Double(8000,20000)
-                }, 10, "Uhuuul"
+                    Salario = faker.Random.Double(9000,20000)
+                }, 
+                10, 
+                "Uhuuul"
             };
+
+        }
+
+        public static IEnumerable<object[]> GetFuncionariosSalariosInvalidos()
+        {
+            var faker = new Faker();
+
+            yield return new object[]
+            {
+                new Funcionario
+                {
+                    Nome = faker.Name.FullName(),
+                    Nascimento = faker.Date.Between(DateTime.Now.AddDays(-21), DateTime.Now.AddDays(-50)),
+                    Senioridade = Senioridade.Junior,
+                    Salario = 3000
+                }
+            };
+
+            yield return new object[]
+{
+                new Funcionario
+                {
+                    Nome = faker.Name.FullName(),
+                    Nascimento = faker.Date.Between(DateTime.Now.AddDays(-21), DateTime.Now.AddDays(-50)),
+                    Senioridade = Senioridade.Junior,
+                    Salario = 6000
+                }
+            };
+
+            yield return new object[]
+            {
+                new Funcionario
+                {
+                    Nome = faker.Name.FullName(),
+                    Nascimento = faker.Date.Between(DateTime.Now.AddDays(-21), DateTime.Now.AddDays(-50)),
+                    Senioridade = Senioridade.Pleno,
+                    Salario = 5000
+                }
+            };
+
+            yield return new object[]
+            {
+                new Funcionario
+                {
+                    Nome = faker.Name.FullName(),
+                    Nascimento = faker.Date.Between(DateTime.Now.AddDays(-21), DateTime.Now.AddDays(-50)),
+                    Senioridade = Senioridade.Pleno,
+                    Salario = 9000
+                }
+            };
+
+            yield return new object[]
+            {
+                new Funcionario
+                {
+                    Nome = faker.Name.FullName(),
+                    Nascimento = faker.Date.Between(DateTime.Now.AddDays(-21), DateTime.Now.AddDays(-50)),
+                    Senioridade = Senioridade.Senior,
+                    Salario = 7000
+                }
+            };
+
+        }
+
+        [Fact]
+        public void AdicionarFuncionario_DeveEmitirException_QuandoFuncionarioNulo()
+        {
+            // Arrange
+            Funcionario funcionario = null;
+            FuncionarioService sut = new FuncionarioService();
+
+            // Act & Assert
+            Assert.Throws<Exception>(() => sut.AdicionarFuncionario(funcionario));
+
+        }
+
+        [Fact]
+        public void AdicionarFuncionario_DeveEmitirException_QuandoNomeCurto()
+        {
+            // Arrange
+            var faker = new Faker();
+            Funcionario funcionario = new Funcionario
+            {
+                Nome = "a",
+                Nascimento = faker.Date.Between(DateTime.Now.AddYears(-50), DateTime.Now.AddYears(-70)),
+                Senioridade = Senioridade.Senior,
+                Salario = faker.Random.Int(8000, 20000)
+            };
+
+            FuncionarioService sut = new FuncionarioService();
+
+            // Act & Assert
+            Assert.Throws<FormatException>(() => sut.AdicionarFuncionario(funcionario));
+
+        }
+
+        [Fact]
+        public void AdicionarFuncionario_DeveEmitirException_QuandoNascimentoInvalido()
+        {
+            // Arrange
+            var faker = new Faker();
+            Funcionario funcionario = new Funcionario
+            {
+                Nome = faker.Name.FullName(),
+                Nascimento = DateTime.Now.AddYears(-51),
+                Senioridade = Senioridade.Senior,
+                Salario = faker.Random.Int(8000, 20000)
+            };
+
+            FuncionarioService sut = new FuncionarioService();
+
+            // Act & Assert
+            Assert.Throws<Exception>(() => sut.AdicionarFuncionario(funcionario));
+
+        }
+
+        [Theory]
+        [MemberData(nameof(GetFuncionariosSalariosInvalidos))]
+        public void AdicionarFuncionario_DeveEmitirException_QuandoSalarioInvalido(Funcionario funcionario)
+        {
+            // Arrange
+            FuncionarioService sut = new FuncionarioService();
+
+            // Act & Assert
+            Assert.Throws<Exception>(() => sut.AdicionarFuncionario(funcionario));
+
         }
     }
 }
